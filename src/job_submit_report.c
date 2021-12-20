@@ -29,11 +29,11 @@ typedef struct report {
 } report_t;
 
 #define REPORT_FORMAT          \
-  "job_id: %d\n"               \
-  "user_id: %d\n"              \
+  "job_id: %du\n"              \
+  "user_id: %du\n"             \
   "cluster: %s\n"              \
   "partition: %s\n"            \
-  "billable_ressources: %ld\n" \
+  "billable_ressources: %lu\n" \
   "time_start: %ld\n"          \
   "cost_tier:\n"               \
   "  name: %s\n"               \
@@ -110,12 +110,13 @@ extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
   if (job_desc->tres_req_cnt) {
     report.billing = job_desc->tres_req_cnt[TRES_ARRAY_BILLING];
   }
-  debug("%s: report.billing %ld", plugin_type, report.billing);
+  debug("%s: report.billing %lu", plugin_type, report.billing);
 
   // Find the usage factor
   ListIterator itr = list_iterator_create(assoc_mgr_qos_list);
   slurmdb_qos_rec_t *qos;
   while ((qos = list_next(itr))) {
+    debug("%s: test qos %s", plugin_type, qos->name);
     if (xstrcmp(qos->name, report.qos_name) == 0) {
       report.usage_factor = qos->usage_factor;
       break;
@@ -126,7 +127,7 @@ extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
 
   // Output
   char log_path[1024];
-  snprintf(log_path, sizeof(log_path), "%s/%d.report", "/tmp",
+  snprintf(log_path, sizeof(log_path), "%s/%du.report", "/tmp",
            job_desc->job_id);
   debug("%s: archiving %s", plugin_type, log_path);
 
