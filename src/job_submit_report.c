@@ -129,12 +129,15 @@ extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
   char log_path[1024];
   snprintf(log_path, sizeof(log_path), "%s/%du.report", "/tmp",
            job_desc->job_id);
+
   debug("%s: archiving %s", plugin_type, log_path);
 
   char buffer[1024];
   snprintf(buffer, sizeof(buffer), REPORT_FORMAT, report.job_id, report.user_id,
            report.cluster, report.partition, report.billing, report.start_time,
            report.qos_name, report.usage_factor);
+
+  debug("%s\n", buffer);
 
   FILE *output = fopen(log_path, "w");
   if (output != NULL) {
