@@ -14,7 +14,20 @@ jobs:
 
       - name: Install dependencies on ubuntu
         run: |
-          sudo apt update && sudo apt install -y ninja-build build-essential cmake
+          sudo apt update && sudo apt install -y ninja-build build-essential cmake git python3
+
+      - name: Install slurm
+        env:
+          SLURM_VERSION: slurm-21-08-3-1
+        run: |
+          git clone -b ${SLURM_VERSION} --depth=1 https://github.com/SchedMD/slurm.git
+          cd slurm
+          ./configure \
+            --disable-gtktest \
+            --disable-debug \
+            --disable-slurmrestd
+          make -j$(nproc)
+          make install
 
       - name: Configure
         run: |

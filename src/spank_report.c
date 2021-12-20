@@ -1,10 +1,10 @@
+#include <slurm/slurm.h>
+#include <slurm/slurmdb.h>
+#include <slurm/spank.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "slurm/slurm.h"
-#include "slurm/slurmdb.h"
-#include "slurm/spank.h"
 #include "string_utils.h"
 
 #define TRES_BILLING 5

@@ -1,3 +1,0 @@
-[submodule "externals/slurm"]
-	path = externals/slurm
-	url = https://github.com/SchedMD/slurm.git

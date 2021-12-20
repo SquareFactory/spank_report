@@ -1,10 +1,9 @@
 #include "string_utils.h"
 
+#include <slurm/slurm.h>
+#include <slurm/spank.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "slurm/slurm.h"
-#include "slurm/spank.h"
 
 #define slurm_atoull(str) strtoull(str, NULL, 10)
 
