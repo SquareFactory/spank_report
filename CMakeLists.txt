@@ -9,7 +9,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
 project(
-  jobcomp_report
+  job_submit_report
   VERSION 1.0.0
   DESCRIPTION "Job completion reporting plugin")
 
@@ -25,24 +25,25 @@ add_custom_command(
 add_custom_target(slurm_configure
                   DEPENDS ${SLURM_SRC_DIR}/slurm/slurm_version.h)
 
-add_library(jobcomp_report SHARED ${CMAKE_SOURCE_DIR}/src/jobcomp_report.c)
-add_library(jobcomp_report_static STATIC
-            ${CMAKE_SOURCE_DIR}/src/jobcomp_report.c)
+add_library(${CMAKE_PROJECT_NAME} SHARED
+            ${CMAKE_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.c)
+add_library(${CMAKE_PROJECT_NAME}_static STATIC
+            ${CMAKE_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.c)
 
-add_dependencies(jobcomp_report slurm_configure)
-add_dependencies(jobcomp_report_static slurm_configure)
+add_dependencies(${CMAKE_PROJECT_NAME} slurm_configure)
+add_dependencies(${CMAKE_PROJECT_NAME}_static slurm_configure)
 
-set_target_properties(jobcomp_report PROPERTIES C_STANDARD 11 PREFIX "")
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES C_STANDARD 11 PREFIX "")
 set_target_properties(
-  jobcomp_report_static
+  ${CMAKE_PROJECT_NAME}_static
   PROPERTIES C_STANDARD 11
              PREFIX ""
-             OUTPUT_NAME jobcomp_report)
+             OUTPUT_NAME ${CMAKE_PROJECT_NAME})
 
-target_include_directories(jobcomp_report PUBLIC ${SLURM_SRC_DIR})
-target_include_directories(jobcomp_report_static PUBLIC ${SLURM_SRC_DIR})
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${SLURM_SRC_DIR})
+target_include_directories(${CMAKE_PROJECT_NAME}_static PUBLIC ${SLURM_SRC_DIR})
 
 install(
-  TARGETS jobcomp_report jobcomp_report_static
+  TARGETS ${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_static
   LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX})
