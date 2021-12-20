@@ -1,6 +1,6 @@
-FROM ubuntu
+ARG ubuntu_version=latest
 
-COPY . .
+FROM ubuntu:${ubuntu_version}
 
 ARG slurm_version=slurm-21-08-3-1
 
@@ -10,10 +10,15 @@ RUN apt update \
   && apt install -y \
   ninja-build \
   build-essential \
-  cmake \
   git \
   python3 \
+  wget \
   && rm -rf /var/lib/apt/lists/*
+
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh -qO /tmp/cmake-install.sh \
+  && chmod u+x /tmp/cmake-install.sh \
+  && /tmp/cmake-install.sh --skip-license --prefix=/usr/local \
+  && rm /tmp/cmake-install.sh
 
 RUN git clone -b ${slurm_version} --depth=1 https://github.com/SchedMD/slurm.git \
   && cd slurm \
@@ -23,6 +28,8 @@ RUN git clone -b ${slurm_version} --depth=1 https://github.com/SchedMD/slurm.git
   --disable-slurmrestd \
   && make -j$(nproc) \
   && make install
+
+COPY . .
 
 RUN mkdir build \
   && cd build \

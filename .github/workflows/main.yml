@@ -14,7 +14,14 @@ jobs:
 
       - name: Install dependencies on ubuntu
         run: |
-          sudo apt update && sudo apt install -y ninja-build build-essential cmake git python3
+          sudo apt update && sudo apt install -y ninja-build build-essential git python3 wget
+
+      - name: Install latest cmake
+        run: |
+          wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh -qO /tmp/cmake-install.sh \
+            && sudo chmod u+x /tmp/cmake-install.sh \
+            && sudo /tmp/cmake-install.sh --skip-license --prefix=/usr/local \
+            && rm /tmp/cmake-install.sh
 
       - name: Install slurm
         env:
@@ -48,6 +55,9 @@ jobs:
   build-with-docker:
     name: Build the plugin with docker
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        tag: ['18.04', '20.04', '22.04']
     steps:
       - uses: actions/checkout@v2
         with:
@@ -60,4 +70,4 @@ jobs:
           install: true
 
       - name: Build
-        run: docker build . -t jobcomp_report
+        run: docker build . -t jobcomp_report --build-arg ubuntu_version=${{ matrix.tag }}
