@@ -52,9 +52,9 @@ typedef struct report {
   "  factor: %lf\n"
 
 /**
- * @brief Called just after plugins are loaded. In remote context, this is just
- * after job step is initialized. This function is called before any plugin
- * option processing.
+ * @brief Called in local (srun) context only after all options have been
+ * processed. This is called after the job ID and step IDs are available. This
+ * happens in srun after the allocation is made, but before tasks are launched.
  *
  * @param spank (input) SPANK handle which must be passed back to Slurm when the
  * plugin calls functions like spank_get_item and spank_getenv.
@@ -62,19 +62,17 @@ typedef struct report {
  * @param argv Argument vector
  * @return int Error code
  */
-extern int slurm_spank_init(spank_t spank, int ac, char *argv[]) {
-  int rc = SLURM_SUCCESS;
-
+extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
   unsigned int jobid = 0;
   job_info_msg_t *job_info = NULL;
   if (spank_get_item(spank, S_JOB_ID, &jobid) != 0) {
     slurm_error("%s: couldn't find the job ID", plugin_type);
-    return SLURM_ERROR;
+    return SLURM_SUCCESS;
   }
   slurm_debug("%s: start %s %d", plugin_type, __func__, jobid);
   if (slurm_load_job(&job_info, jobid, SHOW_ALL) != 0) {
     slurm_error("%s: couldn't load the job %u", plugin_type, jobid);
-    return SLURM_ERROR;
+    return SLURM_SUCCESS;
   }
 
   slurm_job_info_t *job = job_info->job_array;
@@ -115,7 +113,6 @@ extern int slurm_spank_init(spank_t spank, int ac, char *argv[]) {
   memset(&req, 0, sizeof(assoc_mgr_info_request_msg_t));
   req.flags = ASSOC_MGR_INFO_FLAG_QOS;
   if (slurm_load_assoc_mgr_info(&req, &msg) != SLURM_SUCCESS || msg == NULL) {
-    rc = SLURM_ERROR;
     goto cleanup;
   }
 
@@ -149,7 +146,6 @@ extern int slurm_spank_init(spank_t spank, int ac, char *argv[]) {
     fprintf(output, "%s\n", buffer);
     fclose(output);
   } else {
-    rc = SLURM_ERROR;
     goto cleanup;
   }
 
@@ -160,5 +156,5 @@ cleanup:
   free(report.qos_name);
   free(report.partition);
 
-  return rc;
+  return SLURM_SUCCESS;
 }
