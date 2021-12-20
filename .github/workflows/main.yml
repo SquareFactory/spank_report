@@ -70,4 +70,4 @@ jobs:
           install: true
 
       - name: Build
-        run: docker build . -t jobcomp_report --build-arg ubuntu_version=${{ matrix.tag }}
+        run: docker build . -t spank_report --build-arg ubuntu_version=${{ matrix.tag }}
