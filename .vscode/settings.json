@@ -1,5 +1,23 @@
 {
   "files.associations": {
+    "*.twig": "twig",
+    "*.eb": "python",
     "*.h": "c",
+    "typeinfo": "c",
+    "ctime": "c",
+    "random": "c",
+    "limits": "c",
+    "functional": "c",
+    "*.tcc": "c",
+    "system_error": "c",
+    "fstream": "c",
+    "iostream": "c",
+    "istream": "c",
+    "new": "c",
+    "ostream": "c",
+    "stdexcept": "c",
+    "streambuf": "c",
+    "string": "c",
+    "sstream": "c"
   }
 }
