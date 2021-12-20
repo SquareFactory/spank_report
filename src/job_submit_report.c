@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "slurm/slurm_errno.h"
+#include "src/common/assoc_mgr.h"
 #include "src/common/slurm_xlator.h"
 #include "src/slurmctld/locks.h"
 #include "src/slurmctld/slurmctld.h"
@@ -8,9 +9,6 @@
 const char plugin_name[] = "Job submit report plugin";
 const char plugin_type[] = "job_submit/report";
 const uint32_t plugin_version = SLURM_VERSION_NUMBER;
-
-// TODO: fetch balance
-#define MOCK_BALANCE 10000
 
 typedef struct report {
   /** @brief A Slurm Job ID. */
@@ -81,7 +79,11 @@ extern int fini(void) {
 extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
                       char **err_msg) {
   debug("%s: start %s %d", plugin_type, __func__, job_desc->job_id);
+  if (job_desc == NULL) return error("%s: job_desc is NULL", plugin_type);
+
   int rc = SLURM_SUCCESS;
+
+  xassert(assoc_mgr_qos_list);
 
   // Report the job factors to the server
   report_t report = {.job_id = job_desc->job_id,
@@ -111,23 +113,12 @@ extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
   }
   debug("%s: report.billing %ld", plugin_type, report.billing);
 
-  // Fetch slurm assoc mgr info to be able to fetch the usage factor
-  assoc_mgr_info_request_msg_t req;
-  assoc_mgr_info_msg_t *msg = NULL;
-  memset(&req, 0, sizeof(assoc_mgr_info_request_msg_t));
-  int cc = slurm_load_assoc_mgr_info(&req, &msg);
-  if (cc != SLURM_SUCCESS) {
-    slurm_perror("slurm_load_assoc_mgr_info error");
-    rc = SLURM_ERROR;
-    goto cleanup;
-  }
-
   // Find the usage factor
-  ListIterator itr = list_iterator_create(msg->qos_list);
-  slurmdb_qos_rec_t *qos_ptr;
-  while ((qos_ptr = list_next(itr))) {
-    if (xstrcmp(qos_ptr->name, report.qos_name) == 0) {
-      report.usage_factor = qos_ptr->usage_factor;
+  ListIterator itr = list_iterator_create(assoc_mgr_qos_list);
+  slurmdb_qos_rec_t *qos;
+  while ((qos = list_next(itr))) {
+    if (xstrcmp(qos->name, report.qos_name) == 0) {
+      report.usage_factor = qos->usage_factor;
       break;
     }
   }
@@ -155,7 +146,6 @@ extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
   }
 
 cleanup:
-  slurm_free_assoc_mgr_info_msg(msg);
   xfree(report.cluster);
   xfree(report.qos_name);
   xfree(report.partition);
