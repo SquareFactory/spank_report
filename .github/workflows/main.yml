@@ -27,7 +27,7 @@ jobs:
             --disable-debug \
             --disable-slurmrestd
           make -j$(nproc)
-          make install
+          sudo make install
 
       - name: Configure
         run: |
