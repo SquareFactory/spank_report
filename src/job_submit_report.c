@@ -29,8 +29,8 @@ typedef struct report {
 } report_t;
 
 #define REPORT_FORMAT          \
-  "job_id: %du\n"              \
-  "user_id: %du\n"             \
+  "job_id: %u\n"               \
+  "user_id: %u\n"              \
   "cluster: %s\n"              \
   "partition: %s\n"            \
   "billable_ressources: %lu\n" \
@@ -127,7 +127,7 @@ extern int job_submit(job_desc_msg_t *job_desc, uint32_t submit_uid,
 
   // Output
   char log_path[1024];
-  snprintf(log_path, sizeof(log_path), "%s/%du.report", "/tmp",
+  snprintf(log_path, sizeof(log_path), "%s/%u.report", "/tmp",
            job_desc->job_id);
 
   debug("%s: archiving %s", plugin_type, log_path);
