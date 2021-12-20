@@ -7,17 +7,6 @@
 
 #include "string_utils.h"
 
-#define TRES_BILLING 5
-
-/**
- * @brief Returns the value of TRES. Otherwise, returns INFINITE64.
- *
- * @param tres_str_in TRES string format.
- * @param id ID of the TRES.
- * @return uint64_t Value of the TRES.
- */
-uint64_t find_tres_count_in_string(char *tres_str_in, int id);
-
 const char plugin_name[] = "Job SPANK report plugin";
 const char plugin_type[] = "spank/report";
 
@@ -102,8 +91,8 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
 
   if (job->tres_alloc_str && job->tres_alloc_str[0]) {
     slurm_debug("%s: job tres %s", plugin_type, job->tres_alloc_str);
-    report.billing =
-        find_tres_count_in_string(job->tres_alloc_str, TRES_BILLING);
+    slurm_debug("%s: job billable tres %lf", plugin_type, job->billable_tres);
+    report.billing = (uint64_t)job->billable_tres;
   }
   slurm_debug("%s: report.billing %lu", plugin_type, report.billing);
 
@@ -130,7 +119,7 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
 
   // Output
   char log_path[1024];
-  snprintf(log_path, sizeof(log_path), "%s/%u.report", "/tmp", job->job_id);
+  snprintf(log_path, sizeof(log_path), "/tmp/%u.report", job->job_id);
 
   slurm_debug("%s: archiving %s", plugin_type, log_path);
 

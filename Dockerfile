@@ -23,11 +23,9 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1
 RUN git clone -b ${slurm_version} --depth=1 https://github.com/SchedMD/slurm.git \
   && cd slurm \
   && ./configure \
-  --disable-gtktest \
-  --disable-debug \
-  --disable-slurmrestd \
-  && make -j$(nproc) \
-  && make install
+  && cp -r ./slurm /usr/local/include \
+  && cd .. \
+  && rm -rf ./slurm
 
 COPY . .
 

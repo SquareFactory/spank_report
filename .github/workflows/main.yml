@@ -29,12 +29,8 @@ jobs:
         run: |
           git clone -b ${SLURM_VERSION} --depth=1 https://github.com/SchedMD/slurm.git
           cd slurm
-          ./configure \
-            --disable-gtktest \
-            --disable-debug \
-            --disable-slurmrestd
-          make -j$(nproc)
-          sudo make install
+          ./configure
+          sudo cp -r ./slurm /usr/local/include
 
       - name: Configure
         run: |

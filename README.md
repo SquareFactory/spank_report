@@ -50,6 +50,19 @@ required /usr/local/lib/slurm/spank_report.so
 
 TBH, you will have to google a little to find some documentations.
 
+Normally, you only need the headers of the [slurm directory in the slurm repository](https://github.com/SchedMD/slurm/tree/master/slurm) (e.g the public headers).
+
+To install these headers, you will have to configure slurm (execute `./configure`) and copy the files `./slurm/*.h` to `/usr/local/include` or `$HOME/.local/include`.
+
+```sh
+git clone --depth=1 https://github.com/SchedMD/slurm
+cd slurm && ./configure
+mkdir -p $HOME/.local/include
+cp -r ./slurm $HOME/.local/include
+```
+
+Then configure your IDE to include `$HOME/.local/include`.
+
 Official documentation is here: https://slurm.schedmd.com/spank.html
 
 A good example of SPANK plugin is: https://github.com/NVIDIA/pyxis
