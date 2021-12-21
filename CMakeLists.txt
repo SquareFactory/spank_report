@@ -26,6 +26,7 @@ add_compile_options(
   -pedantic
   -Wall
   -Wextra
+  -Werror
   -Wshadow
   -Wdouble-promotion
   -Wformat=2

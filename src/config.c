@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <slurm/spank.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -16,11 +17,7 @@ int config_parse(int argc, char **argv, config_t *config) {
   for (int i = 0; i < argc; i++) {
     if (strncmp("export_path=", argv[i], 13) == 0) {
       optarg = argv[i] + 13;
-      if (memccpy(config->export_path, optarg, '\0',
-                  sizeof(config->export_path)) == NULL) {
-        slurm_error("%s: export_path: path too long: %s", plugin_type, optarg);
-        return -1;
-      }
+      snprintf(config->export_path, sizeof(config->export_path), "%s", optarg);
     } else {
       slurm_error("%s: unknown configuration option: %s", plugin_type, argv[i]);
       return -1;
