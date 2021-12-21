@@ -36,16 +36,9 @@ add_compile_options(
   -Wundef
   -fno-common)
 
-add_library(
-  ${CMAKE_PROJECT_NAME} SHARED
-  ${CMAKE_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.c
-  ${CMAKE_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.h
-  ${CMAKE_SOURCE_DIR}/src/api.h
-  ${CMAKE_SOURCE_DIR}/src/api.c
-  ${CMAKE_SOURCE_DIR}/src/slurm_utils.h
-  ${CMAKE_SOURCE_DIR}/src/slurm_utils.c
-  ${CMAKE_SOURCE_DIR}/src/string_utils.h
-  ${CMAKE_SOURCE_DIR}/src/string_utils.c)
+file(GLOB_RECURSE sources src/*.c src/*.h)
+
+add_library(${CMAKE_PROJECT_NAME} SHARED ${sources})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Threads::Threads)
 

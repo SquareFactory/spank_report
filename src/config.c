@@ -2,6 +2,7 @@
 
 #include <slurm/spank.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "spank_report.h"
 
