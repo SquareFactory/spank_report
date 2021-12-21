@@ -39,7 +39,13 @@ add_compile_options(
 add_library(
   ${CMAKE_PROJECT_NAME} SHARED
   ${CMAKE_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.c
-  ${CMAKE_SOURCE_DIR}/src/string_utils.h ${CMAKE_SOURCE_DIR}/src/string_utils.c)
+  ${CMAKE_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.h
+  ${CMAKE_SOURCE_DIR}/src/api.h
+  ${CMAKE_SOURCE_DIR}/src/api.c
+  ${CMAKE_SOURCE_DIR}/src/slurm_utils.h
+  ${CMAKE_SOURCE_DIR}/src/slurm_utils.c
+  ${CMAKE_SOURCE_DIR}/src/string_utils.h
+  ${CMAKE_SOURCE_DIR}/src/string_utils.c)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Threads::Threads)
 
