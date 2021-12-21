@@ -59,6 +59,11 @@ git clone --depth=1 https://github.com/SchedMD/slurm
 cd slurm && ./configure
 mkdir -p $HOME/.local/include
 cp -r ./slurm $HOME/.local/include
+
+# If you need to build
+mkdir -p build && cd build
+cmake .. -DSLURM_INCLUDE_DIR=$HOME/.local/include
+make -j$(nproc)
 ```
 
 Then configure your IDE to include `$HOME/.local/include`.
