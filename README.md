@@ -43,7 +43,7 @@ sudo make install
 Install on the worker nodes, the spank plugins and add the plugin to `plugstack.conf`.
 
 ```sh
-required /usr/local/lib/slurm/spank_report.so
+required /usr/local/lib/slurm/spank_report.so rmq_api_url=http://localhost:15672/api/exchanges/%2F/amq.default/publish username=guest password=guest routing_key=job_report
 ```
 
 ## Maintaining and updating the plugin for new Slurm Version

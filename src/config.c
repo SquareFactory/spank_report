@@ -12,16 +12,16 @@ int config_parse(int argc, char **argv, config_t *config) {
 
   memset(config, 0, sizeof(*config));
 
-  strcpy(config->export_path,
+  strcpy(config->rmq_api_url,
          "http://localhost:15672/api/exchanges/%2F/amq.default/publish");
   strcpy(config->username, "guest");
   strcpy(config->password, "guest");
   strcpy(config->routing_key, "job_report");
 
   for (int i = 0; i < argc; i++) {
-    if (strncmp("export_path=", argv[i], 12) == 0) {
+    if (strncmp("rmq_api_url=", argv[i], 12) == 0) {
       optarg = argv[i] + 12;
-      snprintf(config->export_path, sizeof(config->export_path), "%s", optarg);
+      snprintf(config->rmq_api_url, sizeof(config->rmq_api_url), "%s", optarg);
     } else if (strncmp("username=", argv[i], 9) == 0) {
       optarg = argv[i] + 9;
       snprintf(config->username, sizeof(config->username), "%s", optarg);

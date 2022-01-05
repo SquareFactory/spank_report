@@ -24,7 +24,12 @@ const char plugin_type[] = "spank/report";
  */
 extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
   // Parse argv
-  config_t config = {.export_path = {0}};
+  config_t config = {
+      .rmq_api_url = {0},
+      .routing_key = {0},
+      .password = {0},
+      .username = {0},
+  };
   if (config_parse(ac, argv, &config) != 0) {
     slurm_error("%s: failed to parse configuration", plugin_type);
     return SLURM_ERROR;
@@ -48,7 +53,7 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
   parse_slurm_job_info(job, &report);
 
   // Output
-  if (publish(&report, config.export_path, config.routing_key, config.username,
+  if (publish(&report, config.rmq_api_url, config.routing_key, config.username,
               config.password) != 0) {
     slurm_error("%s: failed to publish the report", plugin_type);
   }

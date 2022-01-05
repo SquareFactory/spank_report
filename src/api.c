@@ -18,7 +18,7 @@
 int build_json_object(const report_t* report, const char* routing_key,
                       cJSON* output);
 
-int publish(report_t* report, char* export_path, char* routing_key, char* user,
+int publish(report_t* report, char* rmq_api_url, char* routing_key, char* user,
             char* password) {
   int rc = 0;
   CURLcode res;
@@ -41,7 +41,7 @@ int publish(report_t* report, char* export_path, char* routing_key, char* user,
   headers = curl_slist_append(headers, "Content-Type: application/json");
   headers = curl_slist_append(headers, "charset: utf-8");
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-  curl_easy_setopt(curl, CURLOPT_URL, export_path);
+  curl_easy_setopt(curl, CURLOPT_URL, rmq_api_url);
   curl_easy_setopt(curl, CURLOPT_USERNAME, user);
   curl_easy_setopt(curl, CURLOPT_PASSWORD, password);
 
@@ -64,7 +64,7 @@ int publish(report_t* report, char* export_path, char* routing_key, char* user,
         "curl_easy_perform() failed: %s\n"
         "url was %s\n"
         "body was %s\n",
-        curl_easy_strerror(res), export_path, body_str);
+        curl_easy_strerror(res), rmq_api_url, body_str);
     rc = 1;
   }
 

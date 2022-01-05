@@ -8,7 +8,7 @@
 #endif
 
 typedef struct config {
-  char export_path[PATH_MAX];
+  char rmq_api_url[PATH_MAX];
   char username[PATH_MAX];
   char password[PATH_MAX];
   char routing_key[PATH_MAX];
