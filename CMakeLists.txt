@@ -17,6 +17,7 @@ project(
   LANGUAGES C)
 
 find_package(Threads REQUIRED)
+find_package(CURL REQUIRED)
 
 add_compile_options(
   -O3
@@ -35,7 +36,6 @@ add_compile_options(
   -Wcast-align
   -Wcast-qual
   -Wunreachable-code
-  -Wformat-truncation
   -Wmissing-prototypes
   -Wundef
   -fno-common)
@@ -43,7 +43,7 @@ add_compile_options(
 file(GLOB_RECURSE sources src/*.c src/*.h)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED ${sources})
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Threads::Threads)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Threads::Threads curl)
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${SLURM_INCLUDE_DIR})
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES C_STANDARD 11 PREFIX "")
 

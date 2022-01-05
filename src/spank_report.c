@@ -48,7 +48,8 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
   parse_slurm_job_info(job, &report);
 
   // Output
-  if (publish(&report, config.export_path) != 0) {
+  if (publish(&report, config.export_path, config.routing_key, config.username,
+              config.password) != 0) {
     slurm_error("%s: failed to publish the report", plugin_type);
   }
 

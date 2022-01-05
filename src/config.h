@@ -9,6 +9,9 @@
 
 typedef struct config {
   char export_path[PATH_MAX];
+  char username[PATH_MAX];
+  char password[PATH_MAX];
+  char routing_key[PATH_MAX];
 } config_t;
 
 int config_parse(int argc, char **argv, config_t *config);
