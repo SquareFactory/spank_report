@@ -7,6 +7,10 @@
 
 #include "cJSON.h"
 
+size_t write_data(void* buffer, size_t size, size_t nmemb, void* userp) {
+  return size * nmemb;
+}
+
 /**
  * @brief Add the fields from the report. output must be initialized.
  *
@@ -44,7 +48,7 @@ int publish(report_t* report, char* rmq_api_url, char* routing_key, char* user,
   curl_easy_setopt(curl, CURLOPT_URL, rmq_api_url);
   curl_easy_setopt(curl, CURLOPT_USERNAME, user);
   curl_easy_setopt(curl, CURLOPT_PASSWORD, password);
-  curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 
   if (build_json_object(report, routing_key, body) != 0) {
     slurm_error("build_json_object: failed");
