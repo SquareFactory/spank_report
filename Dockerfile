@@ -13,6 +13,7 @@ RUN apt update \
   git \
   python3 \
   wget \
+  libcurl4-openssl-dev \
   && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh -qO /tmp/cmake-install.sh \
