@@ -44,6 +44,7 @@ int publish(report_t* report, char* rmq_api_url, char* routing_key, char* user,
   curl_easy_setopt(curl, CURLOPT_URL, rmq_api_url);
   curl_easy_setopt(curl, CURLOPT_USERNAME, user);
   curl_easy_setopt(curl, CURLOPT_PASSWORD, password);
+  curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
 
   if (build_json_object(report, routing_key, body) != 0) {
     slurm_error("build_json_object: failed");
