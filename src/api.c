@@ -7,7 +7,10 @@
 
 #include "cJSON.h"
 
-size_t write_data(void* buffer, size_t size, size_t nmemb, void* userp) {
+size_t write_data(void* buffer, size_t size, size_t nmemb, void* userp);
+
+size_t write_data(__attribute__((unused)) void* buffer, size_t size,
+                  size_t nmemb, __attribute__((unused)) void* userp) {
   return size * nmemb;
 }
 
