@@ -10,6 +10,7 @@
 
 const char plugin_name[] = "Job SPANK report plugin";
 const char plugin_type[] = "spank/report";
+const uint32_t plugin_version = SLURM_VERSION_NUMBER;
 
 /**
  * @brief Called in local (srun) context only after all options have been

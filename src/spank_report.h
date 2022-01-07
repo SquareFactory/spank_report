@@ -6,6 +6,7 @@
 
 extern const char plugin_name[];
 extern const char plugin_type[];
+extern const uint32_t plugin_version;
 
 typedef struct report {
   /** @brief A Slurm Job ID. */
