@@ -32,7 +32,7 @@ int config_parse(int argc, char **argv, config_t *config) {
       optarg = argv[i] + 12;
       snprintf(config->routing_key, sizeof(config->routing_key), "%s", optarg);
     } else {
-      slurm_error("%s: unknown configuration option: %s", spank_name, argv[i]);
+      slurm_error("%s: unknown configuration option: %s", plugin_type, argv[i]);
       return -1;
     }
   }

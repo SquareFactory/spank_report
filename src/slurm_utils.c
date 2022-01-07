@@ -35,36 +35,37 @@ finally:
 void parse_slurm_job_info(slurm_job_info_t *job, report_t *report) {
   // Report the job factors to the server
   report->job_id = job->job_id;
-  slurm_debug("%s: report->job_id %u", spank_name, report->job_id);
+  slurm_debug("%s: report->job_id %u", plugin_type, report->job_id);
   report->user_id = job->user_id;
-  slurm_debug("%s: report->user_id %u", spank_name, report->user_id);
+  slurm_debug("%s: report->user_id %u", plugin_type, report->user_id);
   report->start_time = job->start_time;
-  slurm_debug("%s: report->start_time %ld", spank_name, report->start_time);
+  slurm_debug("%s: report->start_time %ld", plugin_type, report->start_time);
 
   if (job->cluster && job->cluster[0])
     report->cluster = alt_strdup(job->cluster);
   else
     report->cluster = NULL;
-  slurm_debug("%s: report->cluster %s", spank_name, report->cluster);
+  slurm_debug("%s: report->cluster %s", plugin_type, report->cluster);
 
   if (job->partition && job->partition[0])
     report->partition = alt_strdup(job->partition);
   else
     report->partition = NULL;
-  slurm_debug("%s: report->partition %s", spank_name, report->partition);
+  slurm_debug("%s: report->partition %s", plugin_type, report->partition);
 
   if (job->qos && job->qos[0])
     report->qos_name = alt_strdup(job->qos);
   else
     report->qos_name = NULL;
-  slurm_debug("%s: report->qos_name %s", spank_name, report->qos_name);
+  slurm_debug("%s: report->qos_name %s", plugin_type, report->qos_name);
 
   if (job->tres_alloc_str && job->tres_alloc_str[0]) {
     report->billing = (uint64_t)job->billable_tres;
   }
-  slurm_debug("%s: report->billing %lu", spank_name, report->billing);
+  slurm_debug("%s: report->billing %lu", plugin_type, report->billing);
 
   // Find the usage factor
   report->usage_factor = fetch_usage_factor(report->qos_name);
-  slurm_debug("%s: report->usage_factor %lf", spank_name, report->usage_factor);
+  slurm_debug("%s: report->usage_factor %lf", plugin_type,
+              report->usage_factor);
 }
