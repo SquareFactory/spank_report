@@ -3,6 +3,6 @@
 
 #include <slurm/slurm.h>
 
-char* strdup(const char* s);
+char* alt_strdup(const char* s);
 
 #endif  // STRING_UTILS_H

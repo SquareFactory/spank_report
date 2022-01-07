@@ -42,19 +42,19 @@ void parse_slurm_job_info(slurm_job_info_t *job, report_t *report) {
   slurm_debug("%s: report->start_time %ld", plugin_type, report->start_time);
 
   if (job->cluster && job->cluster[0])
-    report->cluster = strdup(job->cluster);
+    report->cluster = alt_strdup(job->cluster);
   else
     report->cluster = NULL;
   slurm_debug("%s: report->cluster %s", plugin_type, report->cluster);
 
   if (job->partition && job->partition[0])
-    report->partition = strdup(job->partition);
+    report->partition = alt_strdup(job->partition);
   else
     report->partition = NULL;
   slurm_debug("%s: report->partition %s", plugin_type, report->partition);
 
   if (job->qos && job->qos[0])
-    report->qos_name = strdup(job->qos);
+    report->qos_name = alt_strdup(job->qos);
   else
     report->qos_name = NULL;
   slurm_debug("%s: report->qos_name %s", plugin_type, report->qos_name);
