@@ -8,8 +8,7 @@
 #include "config.h"
 #include "slurm_utils.h"
 
-const char plugin_name[] = "Job SPANK report plugin";
-const char plugin_type[] = "spank/report";
+const char spank_name[] = "spank/report";
 
 /**
  * @brief Called in local (srun) context only after all options have been
@@ -31,7 +30,7 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
       .username = {0},
   };
   if (config_parse(ac, argv, &config) != 0) {
-    slurm_error("%s: failed to parse configuration", plugin_type);
+    slurm_error("%s: failed to parse configuration", spank_name);
     return SLURM_ERROR;
   }
 
@@ -39,12 +38,12 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
   unsigned int jobid = 0;
   job_info_msg_t *job_info = NULL;
   if (spank_get_item(spank, S_JOB_ID, &jobid) != 0) {
-    slurm_error("%s: couldn't find the job ID", plugin_type);
+    slurm_error("%s: couldn't find the job ID", spank_name);
     return SLURM_SUCCESS;
   }
-  slurm_debug("%s: start %s %d", plugin_type, __func__, jobid);
+  slurm_debug("%s: start %s %d", spank_name, __func__, jobid);
   if (slurm_load_job(&job_info, jobid, SHOW_ALL) != 0) {
-    slurm_error("%s: couldn't load the job %u", plugin_type, jobid);
+    slurm_error("%s: couldn't load the job %u", spank_name, jobid);
     return SLURM_SUCCESS;
   }
 
@@ -55,7 +54,7 @@ extern int slurm_spank_local_user_init(spank_t spank, int ac, char *argv[]) {
   // Output
   if (publish(&report, config.rmq_api_url, config.routing_key, config.username,
               config.password) != 0) {
-    slurm_error("%s: failed to publish the report", plugin_type);
+    slurm_error("%s: failed to publish the report", spank_name);
   }
 
   free_report_members(&report);

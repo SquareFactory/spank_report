@@ -4,8 +4,7 @@
 #include <inttypes.h>
 #include <time.h>
 
-extern const char plugin_name[];
-extern const char plugin_type[];
+extern const char spank_name[];
 
 typedef struct report {
   /** @brief A Slurm Job ID. */
