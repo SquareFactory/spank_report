@@ -2,7 +2,7 @@ ARG ubuntu_version=latest
 
 FROM ubuntu:${ubuntu_version}
 
-ARG slurm_version=slurm-21-08-3-1
+ARG slurm_version=slurm-21-08-5-1
 
 ENV DEBIAN_FRONTEND=noninteractive
 
