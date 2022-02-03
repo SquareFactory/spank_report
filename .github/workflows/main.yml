@@ -28,20 +28,6 @@ jobs:
           build-args: |
             ubuntu_version=${{ matrix.tag }}
 
-      - name: Test
-        uses: docker/build-push-action@v2
-        id: docker_test
-        with:
-          context: .
-          file: ./Dockerfile.deb
-          platforms: linux/amd64
-          tags: spank-report-test
-          target: tester
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            rocky_version=${{ matrix.tag }}
-
       - name: Fetch artifacts
         run: |
           mkdir -p /artifacts
@@ -53,7 +39,7 @@ jobs:
           path: /artifacts/*.deb
 
   build-with-docker:
-    name: Build the plugin with docker
+    name: Build the plugin on Rocky
     runs-on: ubuntu-20.04
     strategy:
       matrix:
