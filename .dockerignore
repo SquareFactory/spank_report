@@ -63,10 +63,11 @@ build/
 
 .gitignore
 .gitmodules
-Dockerfile
+Dockerfile*
 LICENSE
 README.md
 versions.lock
 ci/
 .vscode/
 .github/
+artifacts/

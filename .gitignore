@@ -62,3 +62,4 @@ _deps
 build/
 
 third_party/slurm
+artifacts/

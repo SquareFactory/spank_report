@@ -1,8 +1,11 @@
 ARG ubuntu_version=latest
-
-FROM ubuntu:${ubuntu_version}
-
 ARG slurm_version=slurm-21-08-5-1
+
+FROM docker.io/library/ubuntu:${ubuntu_version} as builder
+
+ARG slurm_version
+
+WORKDIR /work
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -16,7 +19,7 @@ RUN apt update \
   libcurl4-openssl-dev \
   && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh -qO /tmp/cmake-install.sh \
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh -qO /tmp/cmake-install.sh \
   && chmod u+x /tmp/cmake-install.sh \
   && /tmp/cmake-install.sh --skip-license --prefix=/usr/local \
   && rm /tmp/cmake-install.sh
@@ -32,7 +35,8 @@ COPY . .
 
 RUN mkdir build \
   && cd build \
-  && mkdir artifacts \
-  && cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=artifacts \
+  && mkdir -p /artifacts \
+  && cmake .. -G "Ninja" \
   && ninja -j$(nproc) \
-  && ninja install
+  && ninja package \
+  && mv ./*.deb /artifacts

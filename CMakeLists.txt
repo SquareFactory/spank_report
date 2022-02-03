@@ -1,20 +1,24 @@
 cmake_minimum_required(VERSION 3.9)
 
+project(
+  spank-report
+  VERSION 1.0.0
+  DESCRIPTION "SPANK reporting plugin"
+  LANGUAGES C)
+
 # Availables options
 set(SLURM_INCLUDE_DIR
     /usr/include
     CACHE PATH "Slurm include directory")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_INSTALL_PREFIX /usr/lib/slurm)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib64)
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-
-project(
-  spank_report
-  VERSION 1.0.0
-  DESCRIPTION "SPANK reporting plugin"
-  LANGUAGES C)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX
+      /usr/lib64/slurm
+      CACHE PATH "Install path" FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
@@ -42,10 +46,11 @@ add_compile_options(
 
 file(GLOB_RECURSE sources src/*.c src/*.h)
 
-add_library(${CMAKE_PROJECT_NAME} SHARED ${sources})
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Threads::Threads curl)
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${SLURM_INCLUDE_DIR})
-set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES C_STANDARD 11 PREFIX "")
+add_library(spank_report SHARED ${sources})
+target_link_libraries(spank_report PRIVATE Threads::Threads curl)
+target_include_directories(spank_report PUBLIC ${SLURM_INCLUDE_DIR})
+set_target_properties(spank_report PROPERTIES C_STANDARD 11 PREFIX "")
 
-install(TARGETS ${CMAKE_PROJECT_NAME}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(TARGETS spank_report LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+include(package.cmake)

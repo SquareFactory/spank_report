@@ -1,0 +1,75 @@
+ARG rocky_version=8.5
+ARG slurm_version=slurm-21-08-5-1
+
+FROM quay.io/rockylinux/rockylinux:${rocky_version} as builder
+
+ARG slurm_version
+
+WORKDIR /work
+
+RUN dnf install -y \
+  make \
+  git \
+  gcc \
+  python3 \
+  libcurl-devel \
+  rpm-build \
+  && dnf clean all
+
+RUN curl -fsSL https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh -o /tmp/cmake-install.sh \
+  && chmod u+x /tmp/cmake-install.sh \
+  && /tmp/cmake-install.sh --skip-license --prefix=/usr/local \
+  && rm /tmp/cmake-install.sh
+
+RUN git clone -b ${slurm_version} --depth=1 https://github.com/SchedMD/slurm.git \
+  && cd slurm \
+  && ./configure \
+  && cp -r ./slurm /usr/local/include \
+  && cd .. \
+  && rm -rf ./slurm
+
+COPY . .
+
+RUN mkdir build \
+  && cd build \
+  && mkdir -p /artifacts \
+  && cmake .. \
+  && make -j$(nproc) \
+  && make package \
+  && mv ./*.rpm /artifacts \
+  && mv _CPack_Packages/Linux/RPM/SPECS/*.spec /artifacts
+
+FROM quay.io/rockylinux/rockylinux:${rocky_version} as tester
+
+ARG slurm_version
+
+COPY --from=builder /artifacts /artifacts
+
+RUN dnf install -y \
+  dnf-plugins-core \
+  && dnf config-manager --set-enabled powertools \
+  && dnf clean all
+
+RUN dnf install -y \
+  gcc \
+  munge \
+  perl \
+  mariadb-devel \
+  rpm-build \
+  munge-devel \
+  pam-devel \
+  python3 \
+  readline-devel \
+  && dnf clean all
+
+RUN SLURM_VERSION_DOT=$(echo "${slurm_version}" |tr "-" "." | sed -E 's/slurm\.(.*)\.1/\1/') \
+  && curl -fsSL "https://download.schedmd.com/slurm/slurm-${SLURM_VERSION_DOT}.tar.bz2" -o "slurm-${SLURM_VERSION_DOT}.tar.bz2" \
+  && RPM_BUILD_NCPUS=$(nproc) rpmbuild -tb "slurm-${SLURM_VERSION_DOT}.tar.bz2" --with mysql \
+  && rpm -i "/root/rpmbuild/RPMS/x86_64/slurm-${SLURM_VERSION_DOT}-1.el8.x86_64.rpm" \
+  && rm "slurm-${SLURM_VERSION_DOT}.tar.bz2" \
+  && rm -f /root/rpmbuild/RPMS/x86_64/*.rpm
+
+RUN rpm -i /artifacts/*.rpm
+
+# Assert
+RUN stat /usr/lib64/libslurm.so && stat /usr/lib64/slurm/spank_report.so
