@@ -43,8 +43,6 @@ FROM quay.io/rockylinux/rockylinux:${rocky_version} as tester
 
 ARG slurm_version
 
-COPY --from=builder /artifacts /artifacts
-
 RUN dnf install -y \
   dnf-plugins-core \
   && dnf config-manager --set-enabled powertools \
@@ -68,6 +66,8 @@ RUN SLURM_VERSION_DOT=$(echo "${slurm_version}" |tr "-" "." | sed -E 's/slurm\.(
   && rpm -i "/root/rpmbuild/RPMS/x86_64/slurm-${SLURM_VERSION_DOT}-1.el8.x86_64.rpm" \
   && rm "slurm-${SLURM_VERSION_DOT}.tar.bz2" \
   && rm -f /root/rpmbuild/RPMS/x86_64/*.rpm
+
+COPY --from=builder /artifacts /artifacts
 
 RUN rpm -i /artifacts/*.rpm
 
