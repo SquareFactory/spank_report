@@ -35,7 +35,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: debs
+          name: deb-${{ matrix.tag }}
           path: /artifacts/*.deb
 
   build-with-docker:
@@ -87,5 +87,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: rpms
+          name: rpm-${{ matrix.tag }}
           path: /artifacts/*.rpm
