@@ -30,8 +30,8 @@ jobs:
 
       - name: Fetch artifacts
         run: |
-          mkdir -p /artifacts
-          docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
+          sudo mkdir -p /artifacts
+          sudo docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
 
       - uses: actions/upload-artifact@v2
         with:
@@ -82,8 +82,8 @@ jobs:
 
       - name: Fetch artifacts
         run: |
-          mkdir -p /artifacts
-          docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
+          sudo mkdir -p /artifacts
+          sudo docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
 
       - uses: actions/upload-artifact@v2
         with:
