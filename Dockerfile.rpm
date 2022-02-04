@@ -41,35 +41,9 @@ RUN mkdir build \
 
 FROM quay.io/rockylinux/rockylinux:${rocky_version} as tester
 
-ARG slurm_version
-
-RUN dnf install -y \
-  dnf-plugins-core \
-  && dnf config-manager --set-enabled powertools \
-  && dnf clean all
-
-RUN dnf install -y \
-  gcc \
-  munge \
-  perl \
-  mariadb-devel \
-  rpm-build \
-  munge-devel \
-  pam-devel \
-  python3 \
-  readline-devel \
-  && dnf clean all
-
-RUN SLURM_VERSION_DOT=$(echo "${slurm_version}" |tr "-" "." | sed -E 's/slurm\.(.*)\.1/\1/') \
-  && curl -fsSL "https://download.schedmd.com/slurm/slurm-${SLURM_VERSION_DOT}.tar.bz2" -o "slurm-${SLURM_VERSION_DOT}.tar.bz2" \
-  && RPM_BUILD_NCPUS=$(nproc) rpmbuild -tb "slurm-${SLURM_VERSION_DOT}.tar.bz2" --with mysql \
-  && rpm -i "/root/rpmbuild/RPMS/x86_64/slurm-${SLURM_VERSION_DOT}-1.el8.x86_64.rpm" \
-  && rm "slurm-${SLURM_VERSION_DOT}.tar.bz2" \
-  && rm -f /root/rpmbuild/RPMS/x86_64/*.rpm
-
 COPY --from=builder /artifacts /artifacts
 
 RUN rpm -i /artifacts/*.rpm
 
 # Assert
-RUN stat /usr/lib64/libslurm.so && stat /usr/lib64/slurm/spank_report.so
+RUN stat /usr/lib64/slurm/spank_report.so
