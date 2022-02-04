@@ -1,7 +1,7 @@
 name: Build the library
 on: [push, pull_request]
 jobs:
-  build:
+  build-deb:
     name: Build the plugin on Ubuntu
     runs-on: ubuntu-20.04
     strategy:
@@ -38,7 +38,7 @@ jobs:
           name: deb-${{ matrix.tag }}
           path: /artifacts/*.deb
 
-  build-with-docker:
+  build-rpm:
     name: Build the plugin on Rocky
     runs-on: ubuntu-20.04
     strategy:
