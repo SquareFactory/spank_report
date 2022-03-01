@@ -16,6 +16,7 @@ RUN dnf install -y \
   python3 \
   libcurl-devel \
   rpm-build \
+  rsync \
   && dnf clean all
 
 RUN curl -fsSL https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.sh -o /tmp/cmake-install.sh \
