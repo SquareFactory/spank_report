@@ -47,3 +47,5 @@ RUN rpm -i /artifacts/*.rpm
 
 # Assert
 RUN stat /usr/lib64/slurm/spank_report.so
+
+CMD ["rsync", "-a", "-v", "-z", "-P", "/artifacts/", "repository:/repository/"]

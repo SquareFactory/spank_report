@@ -39,7 +39,7 @@ jobs:
           path: /artifacts/*.deb
 
   build-rpm:
-    name: Build the plugin on Rocky
+    name: Build and export the plugin on Rocky
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -80,12 +80,18 @@ jobs:
           build-args: |
             rocky_version=${{ matrix.tag }}
 
-      - name: Fetch artifacts
+      - name: Fetch secrets
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
         run: |
-          sudo mkdir -p /artifacts
-          sudo docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
+          sudo mkdir -p /secrets/
+          echo "$SSH_PRIVATE_KEY" | sudo tee /secrets/id_rsa
+          echo "$SSH_KNOWN_HOSTS" | sudo tee /secrets/known_hosts
+          echo "$SSH_CONFIG" | sudo tee /secrets/config
+          sudo chown -R root:root /secrets/
+          sudo chmod 600 /secrets/*
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: rpm-${{ matrix.tag }}
-          path: /artifacts/*.rpm
+      - name: Run Docker image
+        run: sudo docker run --rm --pull never -v "/secrets:/root/.ssh" builder
