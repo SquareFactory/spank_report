@@ -87,9 +87,9 @@ jobs:
           SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
         run: |
           sudo mkdir -p /secrets/
-          echo "$SSH_PRIVATE_KEY" | sudo tee /secrets/id_rsa
-          echo "$SSH_KNOWN_HOSTS" | sudo tee /secrets/known_hosts
-          echo "$SSH_CONFIG" | sudo tee /secrets/config
+          echo "$SSH_PRIVATE_KEY" | sudo tee /secrets/id_rsa > /dev/null
+          echo "$SSH_KNOWN_HOSTS" | sudo tee /secrets/known_hosts > /dev/null
+          echo "$SSH_CONFIG" | sudo tee /secrets/config > /dev/null
           sudo chown -R root:root /secrets/
           sudo chmod 600 /secrets/*
 
