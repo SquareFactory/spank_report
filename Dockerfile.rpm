@@ -1,5 +1,5 @@
 ARG rocky_version=8.5
-ARG slurm_version=slurm-21-08-6-1
+ARG slurm_version=slurm-21-08-7-1
 
 # ------------------------------------------------------------
 FROM quay.io/rockylinux/rockylinux:${rocky_version} as builder
