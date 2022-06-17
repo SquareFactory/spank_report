@@ -90,6 +90,8 @@ jobs:
 
       - uses: actions/setup-python@v4
         if: startsWith(github.ref, 'refs/tags/')
+        with:
+          python-version: '3.x'
 
       - name: Install s3cmd
         if: startsWith(github.ref, 'refs/tags/')
