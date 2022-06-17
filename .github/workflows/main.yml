@@ -32,8 +32,10 @@ jobs:
         run: |
           sudo mkdir -p /artifacts
           sudo docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
+          ls -la /artifacts
 
       - uses: actions/upload-artifact@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           name: deb-${{ matrix.tag }}
           path: /artifacts/*.deb
@@ -80,18 +82,25 @@ jobs:
           build-args: |
             rocky_version=${{ matrix.tag }}
 
-      - name: Fetch secrets
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-          SSH_CONFIG: ${{ secrets.SSH_CONFIG }}
+      - name: Fetch artifacts
         run: |
-          sudo mkdir -p /secrets/
-          echo "$SSH_PRIVATE_KEY" | sudo tee /secrets/id_rsa > /dev/null
-          echo "$SSH_KNOWN_HOSTS" | sudo tee /secrets/known_hosts > /dev/null
-          echo "$SSH_CONFIG" | sudo tee /secrets/config > /dev/null
-          sudo chown -R root:root /secrets/
-          sudo chmod 600 /secrets/*
+          sudo mkdir -p /artifacts
+          sudo docker run -v /artifacts:/out --rm spank-report sh -c "cp /artifacts/* /out/"
+          ls -la /artifacts
 
-      - name: Run Docker image
-        run: sudo docker run --rm --pull never -v "/secrets:/root/.ssh" spank-report
+      - uses: actions/setup-python@v4
+        if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Install s3cmd
+        if: startsWith(github.ref, 'refs/tags/')
+        run: pip install s3cmd
+
+      - name: Upload to s3
+        # Do not use an preconfigured github actions to avoid pipeline attacks
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          S3_CFG: '${{ secrets.S3_CFG }}'
+          S3_URL: '${{ secrets.S3_URL }}'
+        run: |
+          echo "${S3_CFG}" >> /.s3cfg
+          s3cmd sync -v --acl="public-read" --config="/.s3cfg" /artifacts/ "${S3_URL}"
