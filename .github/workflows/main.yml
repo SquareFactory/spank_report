@@ -104,5 +104,5 @@ jobs:
           S3_CFG: '${{ secrets.S3_CFG }}'
           S3_URL: '${{ secrets.S3_URL }}'
         run: |
-          echo "${S3_CFG}" >> /.s3cfg
+          sudo echo "${S3_CFG}" >> /.s3cfg
           s3cmd sync -v --acl="public-read" --config="/.s3cfg" /artifacts/ "${S3_URL}"
