@@ -1,5 +1,5 @@
 ARG ubuntu_version=latest
-ARG slurm_version=slurm-22-05-0-1
+ARG slurm_version=slurm-22-05-2-1
 
 FROM docker.io/library/ubuntu:${ubuntu_version} as builder
 
