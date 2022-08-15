@@ -64,6 +64,9 @@ void parse_slurm_job_info(slurm_job_info_t *job, report_t *report) {
   }
   slurm_debug("%s: report->billing %lu", plugin_type, report->billing);
 
+  report->priority = job->priority;
+  slurm_debug("%s: report->priority %u", plugin_type, report->priority);
+
   // Find the usage factor
   report->usage_factor = fetch_usage_factor(report->qos_name);
   slurm_debug("%s: report->usage_factor %lf", plugin_type,

@@ -25,6 +25,8 @@ typedef struct report {
   char *qos_name;
   /** @brief The usage factor of the Qos. */
   double usage_factor;
+  /** @brief The priority of the job. */
+  uint32_t priority;
 } report_t;
 
 void free_report_members(report_t *report);
