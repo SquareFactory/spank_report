@@ -150,6 +150,9 @@ int build_json_object(const report_t* report, const char* routing_key,
     rc = 1;
     goto cleanup;
   }
+  if (!cJSON_AddNumberToObject(payload, "priority", report->priority)) {
+    return error("cJSON_AddNumberToObject: failed");
+  }
 
   // Payload as string
   payload_str = cJSON_PrintUnformatted(payload);

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 
 project(
   spank-report
-  VERSION 1.3.0
+  VERSION 1.3.1
   DESCRIPTION "SPANK reporting plugin"
   LANGUAGES C)
 
