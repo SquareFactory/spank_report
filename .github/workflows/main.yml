@@ -6,7 +6,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        tag: ['18.04', '20.04', '22.04']
+        tag:
+          - image: '18.04'
+          - image: '20.04'
+          - image: '22.04'
     steps:
       - uses: actions/checkout@v2
 
@@ -26,7 +29,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            ubuntu_version=${{ matrix.tag }}
+            ubuntu_version=${{ matrix.tag.image }}
 
       - name: Fetch artifacts
         run: |
@@ -37,7 +40,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: deb-${{ matrix.tag }}
+          name: deb-${{ matrix.tag.image }}
           path: /artifacts/*.deb
 
   build-rpm:
@@ -45,7 +48,11 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        tag: ['8.5', '9.0']
+        tag:
+          - image: '8.5'
+            export_url: S3_URL_ROCKY8
+          - image: '9.0'
+            export_url: S3_URL_ROCKY9
     steps:
       - uses: actions/checkout@v2
 
@@ -66,7 +73,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            rocky_version=${{ matrix.tag }}
+            rocky_version=${{ matrix.tag.image }}
 
       - name: Test
         uses: docker/build-push-action@v2
@@ -80,7 +87,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            rocky_version=${{ matrix.tag }}
+            rocky_version=${{ matrix.tag.image }}
 
       - name: Fetch artifacts
         run: |
@@ -102,7 +109,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           S3_CFG: '${{ secrets.S3_CFG }}'
-          S3_URL: '${{ secrets.S3_URL }}'
+          S3_URL: '${{ secrets[matrix.tag.export_url] }}'
         run: |
           echo "${S3_CFG}" | sudo tee /.s3cfg
           s3cmd sync -v --acl-public --config="/.s3cfg" /artifacts/ "${S3_URL}"
